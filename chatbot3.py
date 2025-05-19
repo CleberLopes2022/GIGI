@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import spacy
+import spacy.cli
 import random
 import base64
 
