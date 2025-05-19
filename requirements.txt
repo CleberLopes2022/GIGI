@@ -1,5 +1,2 @@
-streamlit 
-json
+streamlit
 spacy
-random
-base64
