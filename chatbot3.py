@@ -120,7 +120,14 @@ st.markdown("<h1 style='text-align: center; color: #f5f5fa;'> GIGI - Sua Assiste
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
-# Entrada
+# Exibir histórico (acima do input)
+for remetente, mensagem in st.session_state.historico:
+    if remetente == "Você":
+        st.markdown(f"<div style='text-align: left; background-color: #0b5c11; padding: 25px; border-radius: 10px; margin: 5px;'>{mensagem}</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"<div style='text-align: left; background-color: #6364a8; padding: 25px; border-radius: 10px; margin: 5px;'><strong>GIGI:</strong> {mensagem}</div>", unsafe_allow_html=True)
+
+# Entrada (fica depois do histórico)
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta para a GIGI...", key="input_user")
     enviar = st.form_submit_button("Enviar")
@@ -131,12 +138,10 @@ if enviar and user_input.strip() != "":
     st.session_state.historico.append(("Você", user_input))
     st.session_state.historico.append(("GIGI", resposta))
 
-# Exibir histórico
-for remetente, mensagem in st.session_state.historico:
-    if remetente == "Você":
-        st.markdown(f"<div style='text-align: left; background-color: #0b5c11; padding: 25px; border-radius: 10px; margin: 5px;'>{mensagem}</div>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<div style='text-align: left; background-color: #6364a8; padding: 25px; border-radius: 10px; margin: 5px;'><strong>GIGI:</strong> {mensagem}</div>", unsafe_allow_html=True)
+# Botão para encerrar
+if st.button("Encerrar conversa"):
+    st.session_state.historico = [("GIGI", "Conversa encerrada. Quando quiser conversar de novo, estarei por aqui! 💜")]
+
 
 # Botão para encerrar
 if st.button("Encerrar conversa"):
