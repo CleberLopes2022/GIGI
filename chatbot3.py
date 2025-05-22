@@ -5,7 +5,7 @@ import random
 import base64
 
 # Carregar NLP
-nlp = spacy.load("pt_core_news_md")
+nlp = spacy.load("pt_core_news_sm")
 
 
 # Base de conhecimento
