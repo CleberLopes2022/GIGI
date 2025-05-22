@@ -6,11 +6,8 @@ import random
 import base64
 
 # Carregar NLP
-try:
-    nlp = spacy.load("pt_core_news_md")
-except OSError:
-    spacy.cli.download("pt_core_news_md")
-    nlp = spacy.load("pt_core_news_md")
+nlp = spacy.load("pt_core_news_md")
+
 
 # Base de conhecimento
 def carregar_base():
