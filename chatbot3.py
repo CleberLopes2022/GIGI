@@ -1,12 +1,12 @@
 import streamlit as st
 import json
-import spacy
 import random
 import base64
+from sentence_transformers import SentenceTransformer, util
+import torch
 
-# Carregar NLP
-nlp = spacy.load("pt_core_news_sm")
-
+# Carregar modelo de linguagem
+modelo = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
 # Base de conhecimento
 def carregar_base():
@@ -32,19 +32,19 @@ intencoes = {
 
 respostas_intencao = {
     "saudacao": [
-        "Olá! Que bom te ver por aqui! ",
-        "Oi, tudo bem? Como posso te ajudar hoje? ",
-        "E aí! Pronta pra te ajudar com o que precisar! "
+        "Olá! Que bom te ver por aqui!",
+        "Oi, tudo bem? Como posso te ajudar hoje?",
+        "E aí! Pronta pra te ajudar com o que precisar!"
     ],
     "despedida": [
         "Até mais! Se cuida.",
-        "Tchauzinho! Quando quiser conversar, estarei aqui .",
-        "Foi ótimo falar com você. Até logo! "
+        "Tchauzinho! Quando quiser conversar, estarei aqui.",
+        "Foi ótimo falar com você. Até logo!"
     ],
     "agradecimento": [
-        "De nada! Sempre que precisar, estou por aqui ",
-        "Imagina! GIGI sempre pronta pra ajudar ",
-        "Fico feliz em ajudar! "
+        "De nada! Sempre que precisar, estou por aqui.",
+        "Imagina! GIGI sempre pronta pra ajudar.",
+        "Fico feliz em ajudar!"
     ],
     "ajuda": [
         "Posso responder perguntas com base na minha base de conhecimento! É só digitar.",
@@ -73,13 +73,13 @@ def encontrar_resposta(pergunta):
     if intencao:
         return random.choice(respostas_intencao[intencao])
 
-    pergunta_nlp = nlp(pergunta.lower())
+    pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
     melhor_resposta = random.choice(respostas_padrao)
     maior_similaridade = 0.0
 
     for chave in base_conhecimento.keys():
-        chave_nlp = nlp(chave.lower())
-        similaridade = pergunta_nlp.similarity(chave_nlp)
+        chave_embedding = modelo.encode(chave, convert_to_tensor=True)
+        similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
 
         if similaridade > maior_similaridade:
             maior_similaridade = similaridade
@@ -95,7 +95,6 @@ st.set_page_config(
 )
 
 # --- SIDEBAR ---
-
 def imagem_em_base64(caminho):
     with open(caminho, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
@@ -119,7 +118,7 @@ st.markdown("<h1 style='text-align: center; color: #f5f5fa;'> GIGI - Sua Assiste
 
 # Iniciar histórico
 if "historico" not in st.session_state:
-    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI . Como posso te ajudar hoje?")]
+    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
 # Entrada
 with st.form(key="chat_form"):
@@ -133,7 +132,6 @@ if enviar and user_input.strip() != "":
     st.session_state.historico.append(("GIGI", resposta))
 
 # Exibir histórico
-# st.markdown("## 🗨️ Conversa")
 for remetente, mensagem in st.session_state.historico:
     if remetente == "Você":
         st.markdown(f"<div style='text-align: left; background-color: #0b5c11; padding: 25px; border-radius: 10px; margin: 5px;'>{mensagem}</div>", unsafe_allow_html=True)
