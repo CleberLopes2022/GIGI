@@ -127,22 +127,25 @@ for remetente, mensagem in st.session_state.historico:
     else:
         st.markdown(f"<div style='text-align: left; background-color: #6364a8; padding: 25px; border-radius: 10px; margin: 5px;'><strong>GIGI:</strong> {mensagem}</div>", unsafe_allow_html=True)
 
+# Inicializar campo input
+if "input_user" not in st.session_state:
+    st.session_state.input_user = ""
+
 # Entrada do usuário
 with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta para a GIGI...")
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta para a GIGI...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
 # Processar pergunta
-if enviar and user_input.strip() != "":
+if enviar and st.session_state.input_user.strip() != "":
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
+        resposta = encontrar_resposta(st.session_state.input_user)
+        st.session_state.historico.append(("Você", st.session_state.input_user))
         st.session_state.historico.append(("GIGI", resposta))
-    st.experimental_rerun()
+        st.session_state.input_user = ""  # Campo limpo com segurança
 
 # Botão para encerrar
 if st.button("Encerrar conversa", key="botao_encerrar"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Quando quiser conversar de novo, estarei por aqui! 💜")]
-
 
 
