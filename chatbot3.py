@@ -5,24 +5,25 @@ import base64
 from sentence_transformers import SentenceTransformer, util
 import torch
 
-# Carregar modelo de linguagem
+# Configuração do modelo
 modelo = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-# Base de conhecimento
+# Carregar base de conhecimento uma única vez
+@st.cache_data
 def carregar_base():
     with open("base_conhecimento.json", "r", encoding="utf-8") as file:
         return json.load(file)
 
 base_conhecimento = carregar_base()
 
-# Respostas padrão da GIGI
+# Respostas padrão
 respostas_padrao = [
-    "Hmm... não entendi muito bem 🤔. Pode tentar reformular, por favor?",
+    "Hmm... não entendi muito bem 🤔. Pode tentar reformular?",
     "Desculpe, não consegui compreender 🧠. Pode dizer de outro jeito?",
     "Acho que não peguei isso direito 😅. Pode explicar novamente?"
 ]
 
-# Intenções conhecidas
+# Intenções e respostas
 intencoes = {
     "saudacao": ["oi", "olá", "bom dia", "boa tarde", "boa noite", "e aí"],
     "despedida": ["tchau", "até logo", "até mais", "encerrar", "falou"],
@@ -31,42 +32,33 @@ intencoes = {
 }
 
 respostas_intencao = {
-    "saudacao": [
-        "Olá! Que bom te ver por aqui!",
-        "Oi, tudo bem? Como posso te ajudar hoje?",
-        "E aí! Pronta pra te ajudar com o que precisar!"
-    ],
-    "despedida": [
-        "Até mais! Se cuida.",
-        "Tchauzinho! Quando quiser conversar, estarei aqui.",
-        "Foi ótimo falar com você. Até logo!"
-    ],
-    "agradecimento": [
-        "De nada! Sempre que precisar, estou por aqui.",
-        "Imagina! GIGI sempre pronta pra ajudar.",
-        "Fico feliz em ajudar!"
-    ],
-    "ajuda": [
-        "Posso responder perguntas com base na minha base de conhecimento! É só digitar.",
-        "Sou uma assistente virtual treinada pra entender e responder perguntas.",
-        "Me pergunte algo e eu tentarei ajudar!"
-    ]
+    "saudacao": ["Olá! Que bom te ver por aqui! 😊", "Oi! Como posso te ajudar hoje?", "E aí! Pronta pra te ajudar!"],
+    "despedida": ["Até mais! Se cuida. 😉", "Tchauzinho! Sempre por aqui.", "Foi ótimo falar com você. 👍"],
+    "agradecimento": ["De nada! Sempre por aqui.", "Imagina! GIGI sempre pronta pra ajudar.", "Fico feliz em ajudar! 💜"],
+    "ajuda": ["Posso responder perguntas! É só digitar.", "Sou uma assistente virtual treinada para te ajudar.", "Me pergunte algo e eu tentarei ajudar!"]
 }
 
-# Função para detectar intenção
+# Função para detectar intenção melhorada
 def detectar_intencao(pergunta):
-    pergunta = pergunta.lower()
+    pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
+    melhor_intencao = None
+    maior_similaridade = 0.5  # Definindo um limiar mínimo
+
     for intencao, palavras in intencoes.items():
-        if any(p in pergunta for p in palavras):
-            return intencao
-    return None
+        palavras_embedding = modelo.encode(" ".join(palavras), convert_to_tensor=True)
+        similaridade = util.pytorch_cos_sim(pergunta_embedding, palavras_embedding).item()
 
-# Resposta personalizada com emojis
+        if similaridade > maior_similaridade:
+            maior_similaridade = similaridade
+            melhor_intencao = intencao
+
+    return melhor_intencao
+
+# Personalização de resposta com emojis
 def personalizar_resposta(texto):
-    emojis = ["😊", "😉", "👍", "💬", "🌟"]
-    return f"{texto} {random.choice(emojis)}"
+    return f"{texto} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
 
-# Encontrar resposta da GIGI
+# Buscar resposta com otimização
 def encontrar_resposta(pergunta):
     intencao = detectar_intencao(pergunta)
 
@@ -75,7 +67,7 @@ def encontrar_resposta(pergunta):
 
     pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
     melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.0
+    maior_similaridade = 0.4  # Limite mínimo de similaridade
 
     for chave in base_conhecimento.keys():
         chave_embedding = modelo.encode(chave, convert_to_tensor=True)
@@ -87,14 +79,10 @@ def encontrar_resposta(pergunta):
 
     return melhor_resposta
 
-# Streamlit config
-st.set_page_config(
-    page_title="GIGI - Assistente Virtual",
-    page_icon="🤖",
-    layout="centered"
-)
+# Configuração Streamlit
+st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="🤖")
 
-# --- SIDEBAR ---
+# Sidebar - Exibir imagem
 def imagem_em_base64(caminho):
     with open(caminho, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
@@ -102,50 +90,43 @@ def imagem_em_base64(caminho):
 img_base64 = imagem_em_base64("GIGI.jpg")
 
 with st.sidebar:
-    st.markdown(
-        f"""
+    st.markdown(f"""
         <div style="text-align: center;">
-            <img src="data:image/jpeg;base64,{img_base64}"
-                 style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc;" />
-            <p style="margin-top: 10px; font-weight: bold;">Sou a GIGI, a assistente virtual DGI.</p>
+            <img src="data:image/jpeg;base64,{img_base64}" style="width: 200px; height: 200px; border-radius: 50%;" />
+            <p><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
-# --- Título ---
-st.markdown("<h1 style='text-align: center; color: #f5f5fa;'> GIGI - Sua Assistente Virtual</h1>", unsafe_allow_html=True)
+# Título principal
+st.markdown("<h1 style='text-align: center;'>GIGI - Sua Assistente Virtual</h1>", unsafe_allow_html=True)
 
-# Iniciar histórico
+# Histórico otimizado
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
-# Exibir histórico acima do input
-for remetente, mensagem in st.session_state.historico:
+# Exibição de histórico otimizada
+for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas as últimas 10 interações
     if remetente == "Você":
-        st.markdown(f"<div style='text-align: left; background-color: #0b5c11; padding: 25px; border-radius: 10px; margin: 5px;'>{mensagem}</div>", unsafe_allow_html=True)
+        st.chat_message("user").write(mensagem)
     else:
-        st.markdown(f"<div style='text-align: left; background-color: #6364a8; padding: 25px; border-radius: 10px; margin: 5px;'><strong>GIGI:</strong> {mensagem}</div>", unsafe_allow_html=True)
+        st.chat_message("assistant").write(mensagem)
 
-# Inicializar campo input
-if "input_user" not in st.session_state:
-    st.session_state.input_user = ""
-
-# Entrada do usuário
+# Campo de entrada
 with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta para a GIGI...", key="input_user")
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...")
     enviar = st.form_submit_button("Enviar")
 
-# Processar pergunta
-if enviar and st.session_state.input_user.strip() != "":
+# Processar entrada
+if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state.input_user)
-        st.session_state.historico.append(("Você", st.session_state.input_user))
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
-        st.session_state.input_user = ""  # Campo limpo com segurança
 
-# Botão para encerrar
-if st.button("Encerrar conversa", key="botao_encerrar"):
-    st.session_state.historico = [("GIGI", "Conversa encerrada. Quando quiser conversar de novo, estarei por aqui! 💜")]
+    st.experimental_rerun()
 
+# Botão de encerramento
+if st.button("Encerrar conversa"):
+    st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
+    st.experimental_rerun()
 
