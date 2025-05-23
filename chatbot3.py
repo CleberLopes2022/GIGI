@@ -134,10 +134,13 @@ with st.form(key="chat_form"):
 
 # Processar pergunta
 if enviar and user_input.strip() != "":
-    resposta = encontrar_resposta(user_input)
-    st.session_state.historico.append(("Você", user_input))
-    st.session_state.historico.append(("GIGI", resposta))
+    with st.spinner("GIGI está pensando... 🤖💭"):
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
+        st.session_state.historico.append(("GIGI", resposta))
+        st.session_state["input_user"] = ""  # Limpar campo
 
 # Botão para encerrar (com key exclusiva)
 if st.button("Encerrar conversa", key="botao_encerrar"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Quando quiser conversar de novo, estarei por aqui! 💜")]
+
