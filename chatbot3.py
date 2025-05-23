@@ -5,7 +5,7 @@ import base64
 from sentence_transformers import SentenceTransformer, util
 import torch
 
-# Configuração da página deve ser o primeiro comando
+# Configuração da página - DEVE SER O PRIMEIRO COMANDO
 st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="🤖")
 
 # Carregar o modelo apenas uma vez
@@ -92,9 +92,6 @@ def encontrar_resposta(pergunta):
 
     return melhor_resposta
 
-# Configuração Streamlit
-st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="🤖")
-
 # Sidebar - Exibir imagem
 def imagem_em_base64(caminho):
     with open(caminho, "rb") as img_file:
@@ -136,6 +133,11 @@ if enviar and user_input.strip():
         st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
+    st.experimental_rerun()
+
+# Botão de encerramento
+if st.button("Encerrar conversa"):
+    st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
     st.experimental_rerun()
 
 # Botão de encerramento
