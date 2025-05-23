@@ -5,6 +5,9 @@ import base64
 from sentence_transformers import SentenceTransformer, util
 import torch
 
+# Configuração da página deve ser o primeiro comando
+st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="🤖")
+
 # Carregar o modelo apenas uma vez
 @st.cache_resource
 def carregar_modelo():
