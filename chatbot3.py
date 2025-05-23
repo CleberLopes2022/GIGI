@@ -132,9 +132,12 @@ for remetente, mensagem in st.session_state.historico:
         st.markdown(f"<div style='text-align: left; background-color: #6364a8; padding: 25px; border-radius: 10px; margin: 5px;'><strong>GIGI:</strong> {mensagem}</div>", unsafe_allow_html=True)
 
 # Entrada do usuário
-with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta para a GIGI...", value=st.session_state["input_user"], key="input_user")
-    enviar = st.form_submit_button("Enviar")
+if enviar and user_input.strip() != "":
+    with st.spinner("GIGI está pensando... 🤖💭"):
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
+        st.session_state.historico.append(("GIGI", resposta))
+    st.experimental_rerun()
 
 # Processar pergunta
 if enviar and user_input.strip() != "":
