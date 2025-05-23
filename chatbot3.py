@@ -5,16 +5,27 @@ import base64
 from sentence_transformers import SentenceTransformer, util
 import torch
 
-# Configuração do modelo
-modelo = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+# Carregar o modelo apenas uma vez
+@st.cache_resource
+def carregar_modelo():
+    return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-# Carregar base de conhecimento uma única vez
+modelo = carregar_modelo()
+
+# Carregar base de conhecimento com cache
 @st.cache_data
 def carregar_base():
     with open("base_conhecimento.json", "r", encoding="utf-8") as file:
         return json.load(file)
 
 base_conhecimento = carregar_base()
+
+# Pré-calcular embeddings da base
+@st.cache_data
+def calcular_embeddings_base():
+    return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
+
+embeddings_base = calcular_embeddings_base()
 
 # Respostas padrão
 respostas_padrao = [
@@ -38,7 +49,7 @@ respostas_intencao = {
     "ajuda": ["Posso responder perguntas! É só digitar.", "Sou uma assistente virtual treinada para te ajudar.", "Me pergunte algo e eu tentarei ajudar!"]
 }
 
-# Função para detectar intenção melhorada
+# Detecção de intenção otimizada
 def detectar_intencao(pergunta):
     pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
     melhor_intencao = None
@@ -54,11 +65,11 @@ def detectar_intencao(pergunta):
 
     return melhor_intencao
 
-# Personalização de resposta com emojis
+# Respostas personalizadas
 def personalizar_resposta(texto):
     return f"{texto} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
 
-# Buscar resposta com otimização
+# Busca de resposta otimizada
 def encontrar_resposta(pergunta):
     intencao = detectar_intencao(pergunta)
 
@@ -67,10 +78,9 @@ def encontrar_resposta(pergunta):
 
     pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
     melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.4  # Limite mínimo de similaridade
+    maior_similaridade = 0.4  # Limite mínimo
 
-    for chave in base_conhecimento.keys():
-        chave_embedding = modelo.encode(chave, convert_to_tensor=True)
+    for chave, chave_embedding in embeddings_base.items():
         similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
 
         if similaridade > maior_similaridade:
@@ -104,7 +114,7 @@ st.markdown("<h1 style='text-align: center;'>GIGI - Sua Assistente Virtual</h1>"
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
-# Exibição de histórico otimizada
+# Exibição de histórico com limite de mensagens
 for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas as últimas 10 interações
     if remetente == "Você":
         st.chat_message("user").write(mensagem)
@@ -129,4 +139,3 @@ if enviar and user_input.strip():
 if st.button("Encerrar conversa"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
     st.experimental_rerun()
-
