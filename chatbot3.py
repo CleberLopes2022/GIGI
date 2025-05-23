@@ -135,12 +135,9 @@ if enviar and user_input.strip():
 
     st.experimental_rerun()
 
-# Botão de encerramento
-if st.button("Encerrar conversa"):
+if st.button("Encerrar conversa", key="botao_encerrar"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
     st.experimental_rerun()
 
-# Botão de encerramento
-if st.button("Encerrar conversa"):
-    st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
-    st.experimental_rerun()
+
+
