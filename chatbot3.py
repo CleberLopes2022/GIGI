@@ -147,7 +147,7 @@ def processar_pergunta():
         st.session_state.input_user = ""  # Reset de campo sem erro
 
 # Formulário de entrada abaixo do histórico
-st.markdown("### Digite sua pergunta abaixo")
+st.markdown("Digite sua pergunta abaixo")
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar", on_click=processar_pergunta)
