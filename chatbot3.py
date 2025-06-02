@@ -140,8 +140,9 @@ if "input_user" not in st.session_state:
     st.session_state["input_user"] = ""
 
 # Formulário de entrada
+
 with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user", value=st.session_state.get("input_user", ""))
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
 if enviar and st.session_state["input_user"].strip():
@@ -150,10 +151,10 @@ if enviar and st.session_state["input_user"].strip():
         st.session_state.historico.append(("Você", st.session_state["input_user"]))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Atualizando o estado sem erro
-    st.session_state.update({"input_user": ""})
+    # Use `st.session_state["input_user"] = ""` diretamente, sem `update()`
+    st.session_state["input_user"] = ""
+    # Forçar uma recarga na interface para limpar o campo
     st.rerun()
-
 
 
 
