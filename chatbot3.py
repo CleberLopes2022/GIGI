@@ -145,7 +145,7 @@ if enviar and user_input.strip():
         resposta = encontrar_resposta(user_input)
         st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
-
+        st.session_state["input_user"] = ""
     st.rerun()
 
 if st.button("Encerrar conversa", key="botao_encerrar"):
