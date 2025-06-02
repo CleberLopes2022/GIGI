@@ -109,7 +109,7 @@ with st.sidebar:
                         margin-bottom: 15px;" />
             <p><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
-        <div style="text-align: center; margin-bottom: 15px; color: #00ffff">
+        <div style="text-align: center; margin-bottom: 15px; color: #754dda">
             <p>
                 Meu objetivo é facilitar o seu dia! 
                 Posso responder dúvidas frequentes,fornecer informações úteis e muito mais — tudo com inteligência artificial.
