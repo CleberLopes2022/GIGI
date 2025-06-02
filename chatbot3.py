@@ -130,6 +130,7 @@ if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
 # Exibição do histórico de conversa antes do campo de entrada
+st.markdown("Histórico da conversa")
 for remetente, mensagem in st.session_state.historico[-10:]:
     if remetente == "Você":
         st.chat_message("user").write(mensagem)
@@ -137,11 +138,10 @@ for remetente, mensagem in st.session_state.historico[-10:]:
         st.chat_message("assistant").write(mensagem)
 
 # Campo de entrada abaixo do histórico
+st.markdown("### Enviar nova pergunta")
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
-
-
 
 if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
@@ -149,12 +149,9 @@ if enviar and user_input.strip():
         st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-# Exibição do histórico sem limpar o campo de entrada
-for remetente, mensagem in st.session_state.historico[-10:]:
-    if remetente == "Você":
-        st.chat_message("user").write(mensagem)
-    else:
-        st.chat_message("assistant").write(mensagem)
+    st.rerun()
+
+
 
 
 
