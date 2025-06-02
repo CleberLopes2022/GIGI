@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 
 # Configuração da página - DEVE SER O PRIMEIRO COMANDO
-st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg",style="width: 20px; height: 20px; border-radius: 50%;" )
+st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg")
 
 # Carregar o modelo apenas uma vez
 @st.cache_resource
@@ -92,7 +92,7 @@ def encontrar_resposta(pergunta):
 
     return melhor_resposta
 
-# Sidebar - Exibir imagem
+# Sidebar - Exibir imagem com borda futurista
 def imagem_em_base64(caminho):
     with open(caminho, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
@@ -102,8 +102,11 @@ img_base64 = imagem_em_base64("GIGI.jpg")
 with st.sidebar:
     st.markdown(f"""
         <div style="text-align: center;">
-            <img src="data:image/jpeg;base64,{img_base64}" style="width: 200px; height: 200px; border-radius: 50%;" />
-            <p><b>Sou a GIGI, sua assistente virtual!</b></p>
+            <img src="data:image/jpeg;base64,{img_base64}" 
+                 style="width: 200px; height: 200px; border-radius: 50%;
+                        border: 4px solid #00ffff; 
+                        box-shadow: 0 0 20px #00ffff;" />
+            <p style="color: white;"><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
     """, unsafe_allow_html=True)
 
