@@ -145,15 +145,15 @@ with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
-if enviar and user_input.strip():
+if enviar and st.session_state.input_user.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
+        resposta = encontrar_resposta(st.session_state.input_user)
+        st.session_state.historico.append(("Você", st.session_state.input_user))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Em vez de modificar diretamente, faça um truque usando `st.experimental_rerun()`
-    st.session_state["input_user"] = " "  # Define um espaço temporário
-    st.experimental_rerun()
+    # Agora, resetamos corretamente
+    st.session_state.input_user = ""
+    st.rerun()
 
 
 
