@@ -139,21 +139,22 @@ with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
-if "input_user" not in st.session_state:
-    st.session_state["input_user"] = ""
+with st.form(key="chat_form"):
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
+    enviar = st.form_submit_button("Enviar")
 
-# Processar entrada
-if enviar and st.session_state.input_user.strip():
+if enviar and st.session_state["input_user"].strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state.input_user)
-        st.session_state.historico.append(("Você", st.session_state.input_user))
+        resposta = encontrar_resposta(st.session_state["input_user"])
+        st.session_state.historico.append(("Você", st.session_state["input_user"]))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Resetando corretamente
-    st.session_state.input_user = ""
+    # Redefinir campo sem alterar diretamente o estado
+    st.session_state["input_user"] = " "
 
-    # Atualizar interface para refletir mudanças
+    # Atualizar interface para refletir a mudança
     st.rerun()
+
 
 
 
