@@ -147,16 +147,19 @@ with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
-if enviar and user_input.strip():
-    with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
-        st.session_state.historico.append(("GIGI", resposta))
-
-    # RESETA O CAMPO DE ENTRADA SEM ATUALIZAR A PÁGINA
+def reset_input():
     st.session_state.input_user = ""
 
+if enviar and st.session_state.input_user.strip():
+    with st.spinner("GIGI está pensando... 🤖💭"):
+        resposta = encontrar_resposta(st.session_state.input_user)
+        st.session_state.historico.append(("Você", st.session_state.input_user))
+        st.session_state.historico.append(("GIGI", resposta))
+
+    # Agora fazemos o reset APÓS salvar a resposta, com um callback seguro
+    st.session_state.input_user = ""
     st.rerun()
+
 
 
 
