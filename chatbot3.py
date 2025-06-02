@@ -106,7 +106,7 @@ with st.sidebar:
                  style="width: 200px; height: 200px; border-radius: 50%;
                         border: 4px solid #00ffff; 
                         box-shadow: 0 0 20px #00ffff;" />
-            <p style="color: white;"><b>Sou a GIGI, sua assistente virtual!</b></p>
+            <p><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
     """, unsafe_allow_html=True)
 
