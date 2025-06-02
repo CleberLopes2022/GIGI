@@ -139,6 +139,8 @@ with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
+if "input_user" not in st.session_state:
+    st.session_state["input_user"] = ""
 
 # Processar entrada
 if enviar and st.session_state.input_user.strip():
