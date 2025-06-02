@@ -109,6 +109,15 @@ with st.sidebar:
                         margin-bottom: 15px;" />
             <p><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
+        <div style="padding: 10px; color: #e0f7ff; font-size: 14px; line-height: 1.6;">
+            <p>
+                Meu objetivo é facilitar o seu dia! 
+                Posso responder dúvidas frequentes,fornecer informações úteis e muito mais — tudo com inteligência artificial.
+            </p>
+            <p>
+                Experimente me perguntar algo como "qual o email do credenciamento? ou preciso do link do portal frotista?.
+            </p>
+        </div>
     """, unsafe_allow_html=True)
 
 # Título principal
