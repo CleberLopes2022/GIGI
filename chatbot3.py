@@ -138,27 +138,23 @@ for remetente, mensagem in st.session_state.historico[-10:]:
 
 # Verifica se o estado `input_user` existe antes de ser acessado
 if "input_user" not in st.session_state:
-    st.session_state["input_user"] = ""
-
-# Formulário de entrada
+    st.session_state.input_user = ""
 
 def reset_input():
-    st.session_state["input_user"] = ""
+    st.session_state.input_user = ""
 
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
-if enviar and st.session_state.input_user.strip():
+if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state.input_user)
-        st.session_state.historico.append(("Você", st.session_state.input_user))
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # RESETA O CAMPO **APÓS** adicionar a resposta ao histórico
-    st.session_state.input_user = ""
-
-    # Força atualização para refletir mudanças
+    # Use st.text_input com `value=""` para limpar o campo em vez de alterar diretamente
+    st.session_state.input_user = " "  # Adiciona um espaço temporário para evitar erro
     st.rerun()
 
 
