@@ -134,39 +134,23 @@ for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas 
     else:
         st.chat_message("assistant").write(mensagem)
 
-# Inicialização da sessão
-if "historico" not in st.session_state:
-    st.session_state.historico = [("GIGI", "Olá! Como posso te ajudar hoje? 🤖")]
-
-if "input_user" not in st.session_state:
-    st.session_state["input_user"] = ""
-
-# Função para limpar o input sem conflito
-def limpar_input():
-    st.session_state["input_user"] = ""
-
-# Formulário com campo de entrada controlado
+# Campo de entrada
 with st.form(key="chat_form"):
-    st.text_input("Você:", 
-                  placeholder="Digite sua pergunta...",
-                  key="input_user")  # controlado pelo session_state
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...")
     enviar = st.form_submit_button("Enviar")
 
-# Processar a entrada do usuário
-if enviar and st.session_state["input_user"].strip():
+# Processar entrada
+if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state["input_user"])
-        st.session_state.historico.append(("Você", st.session_state["input_user"]))
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Limpar input chamando função
-    limpar_input()
-    st.rerun()
+    st.experimental_rerun()
 
-# Encerrar conversa
-if st.button("Encerrar conversa", key="botao_encerrar"):
+# Botão de encerramento
+if st.button("Encerrar conversa"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
-    limpar_input()
-    st.rerun()
+    st.experimental_rerun()
 
 
