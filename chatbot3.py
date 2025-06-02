@@ -141,16 +141,16 @@ with st.form(key="chat_form"):
     enviar = st.form_submit_button("Enviar")
 
 # Processar entrada
-if enviar and user_input.strip():
+if enviar and st.session_state.input_user.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
+        resposta = encontrar_resposta(st.session_state.input_user)
+        st.session_state.historico.append(("Você", st.session_state.input_user))
         st.session_state.historico.append(("GIGI", resposta))
-        st.session_state["input_user"] = ""
-    st.rerun()
 
-if st.button("Encerrar conversa", key="botao_encerrar"):
-    st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
+    # Resetar o campo corretamente
+    st.session_state.input_user = ""
+
+    # Atualizar interface
     st.rerun()
 
 
