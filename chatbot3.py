@@ -128,8 +128,11 @@ st.markdown("<h1 style='text-align: center;'>GIGI - Sua Assistente Virtual</h1>"
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
-# Exibição de histórico com limite de mensagens
-for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas as últimas 10 interações
+# Histórico otimizado
+if "historico" not in st.session_state:
+    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
+
+for remetente, mensagem in st.session_state.historico[-10:]:
     if remetente == "Você":
         st.chat_message("user").write(mensagem)
     else:
