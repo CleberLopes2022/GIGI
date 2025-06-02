@@ -56,7 +56,8 @@ respostas_intencao = {
 def detectar_intencao(pergunta):
     pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
     melhor_intencao = None
-    maior_similaridade = 0.5  # Definindo um limiar mínimo
+    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))
+
 
     for intencao, palavras in intencoes.items():
         palavras_embedding = modelo.encode(" ".join(palavras), convert_to_tensor=True)
