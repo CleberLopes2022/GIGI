@@ -53,21 +53,22 @@ respostas_intencao = {
 }
 
 # Detecção de intenção otimizada
-def detectar_intencao(pergunta):
-    pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
-    melhor_intencao = None
-    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))
+def encontrar_resposta(pergunta):
+    intencao = detectar_intencao(pergunta)
+    if intencao:
+        return random.choice(respostas_intencao[intencao])
 
+    pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
+    melhor_resposta = random.choice(respostas_padrao)
+    maior_similaridade = 0.4
 
-    for intencao, palavras in intencoes.items():
-        palavras_embedding = modelo.encode(" ".join(palavras), convert_to_tensor=True)
-        similaridade = util.pytorch_cos_sim(pergunta_embedding, palavras_embedding).item()
-
+    for chave, chave_embedding in embeddings_base.items():
+        similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
         if similaridade > maior_similaridade:
             maior_similaridade = similaridade
-            melhor_intencao = intencao
+            melhor_resposta = f"{base_conhecimento[chave]} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
 
-    return melhor_intencao
+    return melhor_resposta
 
 # Respostas personalizadas
 def personalizar_resposta(texto):
