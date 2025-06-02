@@ -134,40 +134,39 @@ for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas 
     else:
         st.chat_message("assistant").write(mensagem)
 
-# Inicializa o histórico e o input do usuário na sessão
+# Inicialização da sessão
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Como posso te ajudar hoje? 🤖")]
 
 if "input_user" not in st.session_state:
-    st.session_state.input_user = ""
+    st.session_state["input_user"] = ""
 
-# Campo de entrada com formulário
+# Função para limpar o input sem conflito
+def limpar_input():
+    st.session_state["input_user"] = ""
+
+# Formulário com campo de entrada controlado
 with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", 
-                               placeholder="Digite sua pergunta...",
-                               value=st.session_state.input_user,
-                               key="input_user")
+    st.text_input("Você:", 
+                  placeholder="Digite sua pergunta...",
+                  key="input_user")  # controlado pelo session_state
     enviar = st.form_submit_button("Enviar")
 
-# Processar entrada
-if enviar and st.session_state.input_user.strip():
+# Processar a entrada do usuário
+if enviar and st.session_state["input_user"].strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state.input_user)
-        st.session_state.historico.append(("Você", st.session_state.input_user))
+        resposta = encontrar_resposta(st.session_state["input_user"])
+        st.session_state.historico.append(("Você", st.session_state["input_user"]))
         st.session_state.historico.append(("GIGI", resposta))
-    
-    # Limpar campo de entrada
-    st.session_state.input_user = ""
 
-    # Recarrega a página para exibir a resposta
+    # Limpar input chamando função
+    limpar_input()
     st.rerun()
 
-# Botão de encerrar conversa
+# Encerrar conversa
 if st.button("Encerrar conversa", key="botao_encerrar"):
     st.session_state.historico = [("GIGI", "Conversa encerrada. Sempre por aqui quando precisar! 💜")]
-    st.session_state.input_user = ""  # limpa campo também ao encerrar
+    limpar_input()
     st.rerun()
-
-
 
 
