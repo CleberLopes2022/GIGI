@@ -137,28 +137,26 @@ for remetente, mensagem in st.session_state.historico[-10:]:
         st.chat_message("assistant").write(mensagem)
 
 # Verifica se o estado `input_user` existe antes de ser acessado
-if "input_user" not in st.session_state:
-    st.session_state.input_user = ""
-
-def reset_input():
-    st.session_state.input_user = ""
+if "historico" not in st.session_state:
+    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
 
-def reset_input():
-    st.session_state.input_user = ""
-
-if enviar and st.session_state.input_user.strip():
+if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(st.session_state.input_user)
-        st.session_state.historico.append(("Você", st.session_state.input_user))
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Agora fazemos o reset APÓS salvar a resposta, com um callback seguro
-    st.session_state.input_user = ""
-    st.rerun()
+
+# Exibição do histórico sem limpar o campo de entrada
+for remetente, mensagem in st.session_state.historico[-10:]:
+    if remetente == "Você":
+        st.chat_message("user").write(mensagem)
+    else:
+        st.chat_message("assistant").write(mensagem)
 
 
 
