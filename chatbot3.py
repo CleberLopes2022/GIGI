@@ -136,6 +136,7 @@ for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas 
         st.chat_message("assistant").write(mensagem)
 
 
+# Formulário de entrada
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
     enviar = st.form_submit_button("Enviar")
@@ -145,12 +146,10 @@ if enviar and st.session_state["input_user"].strip():
         resposta = encontrar_resposta(st.session_state["input_user"])
         st.session_state.historico.append(("Você", st.session_state["input_user"]))
         st.session_state.historico.append(("GIGI", resposta))
-
-    # Redefinir campo sem alterar diretamente o estado
-    st.session_state["input_user"] = " "
-
-    # Atualizar interface para refletir a mudança
+    
+    st.session_state["input_user"] = ""
     st.rerun()
+
 
 
 
