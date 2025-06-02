@@ -137,8 +137,6 @@ for remetente, mensagem in st.session_state.historico[-10:]:
         st.chat_message("assistant").write(mensagem)
 
 # Verifica se o estado `input_user` existe antes de ser acessado
-if "historico" not in st.session_state:
-    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
