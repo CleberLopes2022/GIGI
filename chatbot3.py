@@ -141,7 +141,7 @@ if "input_user" not in st.session_state:
 
 # Formulário de entrada
 with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user", value=st.session_state.get("input_user", ""))
     enviar = st.form_submit_button("Enviar")
 
 if enviar and st.session_state["input_user"].strip():
@@ -149,8 +149,9 @@ if enviar and st.session_state["input_user"].strip():
         resposta = encontrar_resposta(st.session_state["input_user"])
         st.session_state.historico.append(("Você", st.session_state["input_user"]))
         st.session_state.historico.append(("GIGI", resposta))
-    
-    st.session_state["input_user"] = ""
+
+    # Atualizando o estado sem erro
+    st.session_state.update({"input_user": ""})
     st.rerun()
 
 
