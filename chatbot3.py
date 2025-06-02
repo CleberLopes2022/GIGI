@@ -52,7 +52,28 @@ respostas_intencao = {
     "ajuda": ["Posso responder perguntas! É só digitar.", "Sou uma assistente virtual treinada para te ajudar.", "Me pergunte algo e eu tentarei ajudar!"]
 }
 
-# Detecção de intenção otimizada
+
+def detectar_intencao(pergunta):
+    pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
+    melhor_intencao = None
+    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))
+
+    for intencao, palavras in intencoes.items():
+        palavras_embedding = modelo.encode(" ".join(palavras), convert_to_tensor=True)
+        similaridade = util.pytorch_cos_sim(pergunta_embedding, palavras_embedding).item()
+
+        if similaridade > maior_similaridade:
+            maior_similaridade = similaridade
+            melhor_intencao = intencao
+
+    return melhor_intencao
+
+# Respostas personalizadas
+def personalizar_resposta(texto):
+    return f"{texto} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
+
+
+# Busca de resposta otimizada
 def encontrar_resposta(pergunta):
     intencao = detectar_intencao(pergunta)
     if intencao:
@@ -62,6 +83,7 @@ def encontrar_resposta(pergunta):
     melhor_resposta = random.choice(respostas_padrao)
     maior_similaridade = 0.4
 
+
     for chave, chave_embedding in embeddings_base.items():
         similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
         if similaridade > maior_similaridade:
@@ -70,29 +92,6 @@ def encontrar_resposta(pergunta):
 
     return melhor_resposta
 
-# Respostas personalizadas
-def personalizar_resposta(texto):
-    return f"{texto} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
-
-# Busca de resposta otimizada
-def encontrar_resposta(pergunta):
-    intencao = detectar_intencao(pergunta)
-
-    if intencao:
-        return random.choice(respostas_intencao[intencao])
-
-    pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
-    melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.4  # Limite mínimo
-
-    for chave, chave_embedding in embeddings_base.items():
-        similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
-
-        if similaridade > maior_similaridade:
-            maior_similaridade = similaridade
-            melhor_resposta = personalizar_resposta(base_conhecimento[chave])
-
-    return melhor_resposta
 
 # Sidebar - Exibir imagem com borda futurista
 def imagem_em_base64(caminho):
@@ -125,9 +124,6 @@ with st.sidebar:
 # Título principal
 st.markdown("<h1 style='text-align: center;'>GIGI - Sua Assistente Virtual</h1>", unsafe_allow_html=True)
 
-# Histórico otimizado
-if "historico" not in st.session_state:
-    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
 # Histórico otimizado
 if "historico" not in st.session_state:
@@ -139,6 +135,9 @@ for remetente, mensagem in st.session_state.historico[-10:]:
     else:
         st.chat_message("assistant").write(mensagem)
 
+# Verifica se o estado `input_user` existe antes de ser acessado
+if "input_user" not in st.session_state:
+    st.session_state["input_user"] = ""
 
 # Formulário de entrada
 with st.form(key="chat_form"):
@@ -153,6 +152,7 @@ if enviar and st.session_state["input_user"].strip():
     
     st.session_state["input_user"] = ""
     st.rerun()
+
 
 
 
