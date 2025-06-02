@@ -147,15 +147,20 @@ def reset_input():
 
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
-    enviar = st.form_submit_button("Enviar", on_click=reset_input)
+    enviar = st.form_submit_button("Enviar")
 
-if enviar and user_input.strip():
+if enviar and st.session_state.input_user.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
+        resposta = encontrar_resposta(st.session_state.input_user)
+        st.session_state.historico.append(("Você", st.session_state.input_user))
         st.session_state.historico.append(("GIGI", resposta))
 
+    # RESETA O CAMPO **APÓS** adicionar a resposta ao histórico
+    st.session_state.input_user = ""
+
+    # Força atualização para refletir mudanças
     st.rerun()
+
 
 
 
