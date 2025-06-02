@@ -153,8 +153,8 @@ if enviar and user_input.strip():
         st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Use st.text_input com `value=""` para limpar o campo em vez de alterar diretamente
-    st.session_state.input_user = " "  # Adiciona um espaço temporário para evitar erro
+    # Use `st.session_state.clear()` para evitar erro
+    st.session_state.clear()
     st.rerun()
 
 
