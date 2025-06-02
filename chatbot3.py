@@ -137,11 +137,21 @@ for remetente, mensagem in st.session_state.historico[-10:]:
     else:
         st.chat_message("assistant").write(mensagem)
 
-# Campo de entrada abaixo do histórico
-st.markdown("Enviar pergunta")
+# Função para processar a resposta e atualizar o histórico
+def processar_pergunta():
+    user_input = st.session_state.input_user.strip()
+    if user_input:
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
+        st.session_state.historico.append(("GIGI", resposta))
+        st.session_state.input_user = ""  # Reset de campo sem erro
+
+# Formulário de entrada abaixo do histórico
+st.markdown("### Digite sua pergunta abaixo")
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
-    enviar = st.form_submit_button("Enviar")
+    enviar = st.form_submit_button("Enviar", on_click=processar_pergunta)
+
 
 if enviar and user_input.strip():
     with st.spinner("GIGI está pensando... 🤖💭"):
