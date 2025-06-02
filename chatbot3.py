@@ -153,8 +153,9 @@ if enviar and user_input.strip():
         st.session_state.historico.append(("Você", user_input))
         st.session_state.historico.append(("GIGI", resposta))
 
-    # Use `st.session_state.clear()` para evitar erro
-    st.session_state.clear()
+    # RESETA O CAMPO DE ENTRADA SEM ATUALIZAR A PÁGINA
+    st.session_state.input_user = ""
+
     st.rerun()
 
 
