@@ -135,9 +135,6 @@ for remetente, mensagem in st.session_state.historico[-10:]:  # Mantendo apenas 
     else:
         st.chat_message("assistant").write(mensagem)
 
-with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
-    enviar = st.form_submit_button("Enviar")
 
 with st.form(key="chat_form"):
     user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
