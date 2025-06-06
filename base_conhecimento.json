@@ -130,5 +130,7 @@
     "Como emitir um segunda via do CRV no SDAK": "Opção 22 , digite os dados solicitados , tecle enter e efetiva com o F5.",
     "O que é o CRV-e": "Certificado de Registro de veículo eletrônico",
     "O que é o FD": "É um numero de chamado gerado pelo Freshdesk que era uma plataforma de atendimento utilizada pela DGI e que foi substituida pelo Dynamics, portando passou a utilizar o DY",
-    "O que é o DY": "É um numero de chamado gerado pelo dynamics para atendimento"
+    "O que é o DY": "É um numero de chamado gerado pelo dynamics para atendimento",
+    "Quais são os setores que utilizam o dynamics" : "Os setores que usam o dynamics são: Credenciamento - Veiculos - credenciamento.veiculos@transito.mg.gov.br\nCredenciamento - Habilitação - credenciamento.habilitacao@transito.mg.gov.br\nAssessoria de Relações Institucionais - relacionamento@transito.mg.gov.br\nGabinete - gabinete@transito.mg.gov.br\nLogistica - DGA - logistica@transito.mg.gov.br\nFrotista - frotista@transito.mg.gov.br\nDPAT - dpat.novosexames@transito.mg.gov.br",
+    "O que é BCA": "Base de Condutores Ampliada"
 }
