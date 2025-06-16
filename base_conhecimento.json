@@ -133,7 +133,7 @@
     "O que é o DY": "É um numero de chamado gerado pelo dynamics para atendimento",
     "Quais são os setores que utilizam o dynamics" : "Os setores que usam o dynamics são: Credenciamento - Veiculos - credenciamento.veiculos@transito.mg.gov.br\nCredenciamento - Habilitação - credenciamento.habilitacao@transito.mg.gov.br\nAssessoria de Relações Institucionais - relacionamento@transito.mg.gov.br\nGabinete - gabinete@transito.mg.gov.br\nLogistica - DGA - logistica@transito.mg.gov.br\nFrotista - frotista@transito.mg.gov.br\nDPAT - dpat.novosexames@transito.mg.gov.br",
     "O que é BCA": "Base de Condutores Ampliada",
-    "Como fazer a atualização do crlv-e no SDAK" : "opção 5/enter -2/enter -5/enter/enter, digite a placa e o ano do licenciamento que deseja atualizar. Espero ter ajudado!"
+    "Como fazer a atualização do crlv-e no SDAK" : "opção 5/enter -2/enter -5/enter/enter, digite a placa e o ano do licenciamento que deseja atualizar. Espero ter ajudado!",
     "Como autorizar uma placa no SDAK" : "Opção 60 - Enter\n 1- Autorização de Estampagem/Enter - Digite a placa - Chassi(opcional)\n - No de Tipo operação = 1 'Inclusão',\n No Tipo de placa = 3 se for o par ou = 2 somente traseira ou = 1 somente a dianteira. Após isso no Motivo, geralmente opção 2 (Normal).\nOBs:  Para motocicletas e veículos que utilizam somente uma placa a opção tipo de placa é a Traseira.",
     "Como consultar situação de estampagem no SDAK | Como pesquisar autorização de estampagem no SDAK" : "Opção 60 - Enter\n 4/Enter\n Digite a placa e Enter.",
     "Como consultar se o veículo possui multa de renainf no SDAK" : "F2 em Infrações, opção 10/enter , 2/enter , digite a placa enter.",
