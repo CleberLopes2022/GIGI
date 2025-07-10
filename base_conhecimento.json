@@ -147,5 +147,7 @@
     "Como cadastrar laudo CSV transformação em ambulância no SDAK" : "Opção 47/Enter, 6/Enter e digite as informações solicitadas e enter.",
     "Como cadastrar laudo CSV para renovação de GNV" : "Opção 47/Enter, 7/Enter e digite as informações solicitadas e enter.",
     "Como consultar um lote de veículos de locadora no SDAK" : "Opção 33/Enter , 2/Enter, 3, insira o CNPJ e o numero do lote",
-    "Como consulta o total de veículos emplacados no mês" : "Opção 33/Enter , 7/Enter, insira o período inicial e final da consulta e tecle enter"
+    "Como consulta o total de veículos emplacados no mês" : "Opção 33/Enter , 7/Enter, insira o período inicial e final da consulta e tecle enter",
+    "Como alterar a fila de atendimento no dynamics? " : "Alterar o atendimento, insere uma categoria e clica em salvar e encaminhar e clique em rotear, após conseguirá atribuir para alguém do setor específico.",
+    "Qual o link do fale conosco?" : "https://faleconosco.mg.gov.br/ligminas-bpms-frontend/publico/br/gov/prodemge/seplag/ligminasbpms/visao/processos/RegistrarAtendimentoFaleConosco.zul?processo=PROC_00093&atividade=ATIV_00388&site=DETRAN"
 }
