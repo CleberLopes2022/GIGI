@@ -149,5 +149,9 @@
     "Como consultar um lote de veículos de locadora no SDAK" : "Opção 33/Enter , 2/Enter, 3, insira o CNPJ e o numero do lote",
     "Como consulta o total de veículos emplacados no mês" : "Opção 33/Enter , 7/Enter, insira o período inicial e final da consulta e tecle enter",
     "Como alterar a fila de atendimento no dynamics? " : "Alterar o atendimento, insere uma categoria e clica em salvar e encaminhar e clique em rotear, após conseguirá atribuir para alguém do setor específico.",
-    "Qual o link do fale conosco?" : "https://faleconosco.mg.gov.br/ligminas-bpms-frontend/publico/br/gov/prodemge/seplag/ligminasbpms/visao/processos/RegistrarAtendimentoFaleConosco.zul?processo=PROC_00093&atividade=ATIV_00388&site=DETRAN"
+    "Qual o link do fale conosco?" : "https://faleconosco.mg.gov.br/ligminas-bpms-frontend/publico/br/gov/prodemge/seplag/ligminasbpms/visao/processos/RegistrarAtendimentoFaleConosco.zul?processo=PROC_00093&atividade=ATIV_00388&site=DETRAN",
+    "Preciso de um CNPJ de teste para pesquisa de comunicação de venda no armazém" : "Segue um CNPJ para teste, Banco Itaucard 17192451000170",
+    "Preciso do link da planilha controle de solicitações de chamados abertos na positivo" : "O link da planilha controle de solicitações é https://cecad365-my.sharepoint.com/:x:/r/personal/t139250_ca_mg_gov_br/_layouts/15/Doc.aspx?sourcedoc=%7BBC099EF9-F108-47ED-98F9-3046BBB9E0F5%7D&file=Controle%20de%20Solicita%25u00e7%25u00f5es.xlsx&fromShare=true&action=default&mobileredirect=true",
+    "Preciso do link da planilha e-mails CET" : "https://cecad365-my.sharepoint.com/:x:/r/personal/x6283920_ca_mg_gov_br/Documents/Arquivos%20de%20Chat%20do%20Microsoft%20Teams/E-mails_CET%20(1).xlsx?d=w992fdb31d082407bba84c7cc62abca08&csf=1&web=1&e=ltSCzu",
+    "preciso do link do git" : "https://git.prodemge.gov.br/"
 }
