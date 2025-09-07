@@ -109,9 +109,9 @@ with st.sidebar:
                         border: 4px solid #00ffff; 
                         box-shadow: 0 0 20px #00ffff;
                         margin-bottom: 15px;" />
-            <p <p style="color: #4727ce; font-weight: bold; margin-top: 10px;"><b>Sou a GIGI, sua assistente virtual!</b></p>
+            <p <p style="color:#00ffff; font-weight: bold; margin-top: 10px;"><b>Sou a GIGI, sua assistente virtual!</b></p>
         </div>
-        <div style="text-align: center; margin-bottom: 15px; color: #754dda">
+        <div style="text-align: center; margin-bottom: 15px; color: #00ffff">
             <p>
                 Meu objetivo é facilitar o seu dia! 
                 Posso responder dúvidas frequentes,fornecer informações úteis e muito mais — tudo com inteligência artificial.
@@ -162,6 +162,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
