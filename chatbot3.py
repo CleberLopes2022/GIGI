@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 
 # Configuração da página - DEVE SER O PRIMEIRO COMANDO
-st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg")
+st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg", initial_sidebar_state="expanded")
 
 # Carregar o modelo apenas uma vez
 @st.cache_resource
@@ -162,6 +162,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
