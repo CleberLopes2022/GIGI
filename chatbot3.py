@@ -82,7 +82,7 @@ def encontrar_resposta(pergunta):
 
     pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
     melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.4
+    maior_similaridade = 0.7
 
 
     for chave, chave_embedding in embeddings_base.items():
@@ -162,6 +162,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
