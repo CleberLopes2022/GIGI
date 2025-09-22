@@ -76,6 +76,8 @@ def personalizar_resposta(texto):
 
 # Busca de resposta otimizada
 def encontrar_resposta(pergunta):
+# Normaliza a pergunta (remove espaços extras e deixa em minúsculo)
+    pergunta = pergunta.strip().lower()
     intencao = detectar_intencao(pergunta)
     if intencao:
         return random.choice(respostas_intencao[intencao])
@@ -162,6 +164,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
