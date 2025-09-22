@@ -76,15 +76,14 @@ def personalizar_resposta(texto):
 
 # Busca de resposta otimizada
 def encontrar_resposta(pergunta):
-# Normaliza a pergunta (remove espaços extras e deixa em minúsculo)
-    pergunta = pergunta.lower()
+
     intencao = detectar_intencao(pergunta)
     if intencao:
         return random.choice(respostas_intencao[intencao])
 
     pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
     melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.7
+    maior_similaridade = 0.6
 
 
     for chave, chave_embedding in embeddings_base.items():
@@ -164,6 +163,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
