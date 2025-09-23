@@ -156,7 +156,9 @@
     "preciso do link do git" : "https://git.prodemge.gov.br/",
     "Qual a resposta padrão do Erro serviço indisponível no momento, tente mais tarde?" : "Conforme já orientado, o erro 'SERVICO INDISPONIVEL NO MOMENTO. TENTE MAIS TARDE' é retornado, na maioria das vezes, quando a Base Estadual ou BIN apresentam instabilidade. Nesses casos, a orientação é tentar novamente.\nGentileza verificar  se erro persiste. Caso persista, enviar print da tela.",
     "Link da planilha controle de FD" : "https://cecad365.sharepoint.com/:x:/r/sites/CET-TransformaoeAtendimento/_layouts/15/Doc.aspx?sourcedoc=%7Bde8eecd7-53ae-4f4e-b0c7-32af93bf94e3%7D&action=edit&wdinitialsession=d786c961-55f5-b9f3-d7be-62adfd7ca413&wdrldsc=23&wdrldc=1&wdrldr=UserInteraction%2CBootTimeMismatch",
-    "como emitir o termo de ciencia no SDAK" : "Opção 19 - Enter, guia 1-Emite termo de ciencia para infrações - Enter, Digite a placa e coloque S para transferencia de propriedade-enter, a partir daí digite os dados solicitados."
+    "como emitir o termo de ciencia no SDAK" : "Opção 19 - Enter, guia 1-Emite termo de ciencia para infrações - Enter, Digite a placa e coloque S para transferencia de propriedade-enter, a partir daí digite os dados solicitados.",
+    "Qual o procedimento para concluir autorização de estampagem que esteja sem os dados da nota fiscal?" : "Será necessário o envio de ofício para a área de Segurança da Informação do PRODEMGE, solicitando intervenção técnica para execução da operação.No entanto, é possível que o Cidadão busque pela segunda via da NF-e através da prefeitura da cidade ou obtenha através do site GOV.BR ( https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/nota-fiscal/nota-fiscal-de-servico-eletronica-nfs-e ). Ao obter o número da NE-e, basta solicitar à operadora CET que acesse a opção PF1/60/07 do SDAK ​​para informar os dados de emissão e chave da NF-e e posteriormente executar a opção PF1/60/03 do SDAK ​​para concluir a estampagem de placa."
 }
+
 
 
