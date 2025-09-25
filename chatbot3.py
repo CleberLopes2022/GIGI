@@ -4,6 +4,23 @@ import random
 import base64
 from sentence_transformers import SentenceTransformer, util
 import torch
+import unicodedata
+import re
+
+
+# ---------- 1. Funções de normalização ----------
+def normalizar_texto(texto: str) -> str:
+    """
+    • Converte para minúsculas
+    • Remove acentos (Unicode NFKD → ASCII)
+    • Remove pontuação e espaços extras
+    """
+    texto = texto.lower()
+    texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("utf-8")
+    texto = re.sub(r"[^\w\s]", "", texto)          # remove pontuação
+    texto = re.sub(r"\s+", " ", texto).strip()      # espaços duplos → único
+    return texto
+
 
 # Configuração da página - DEVE SER O PRIMEIRO COMANDO
 st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg", initial_sidebar_state="expanded")
@@ -13,14 +30,20 @@ st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg",
 def carregar_modelo():
     return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
+@st.cache_resource def carregar_modelo(): return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 modelo = carregar_modelo()
 
-# Carregar base de conhecimento com cache
+
+# ---------- 2. Carregamento da base ----------
 @st.cache_data
 def carregar_base():
     with open("base_conhecimento.json", "r", encoding="utf-8") as file:
-        return json.load(file)
+        dados = json.load(file)
+    # Normaliza as chaves – elas serão usadas como “perguntas” na busca
+    return {normalizar_texto(k): v for k, v in dados.items()}
 
+
+@st.cache_data def carregar_base(): with open("base_conhecimento.json", "r", encoding="utf-8") as file: return json.load(file)
 base_conhecimento = carregar_base()
 
 # Pré-calcular embeddings da base
@@ -28,6 +51,7 @@ base_conhecimento = carregar_base()
 def calcular_embeddings_base():
     return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 
+@st.cache_data def calcular_embeddings_base(): return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 embeddings_base = calcular_embeddings_base()
 
 
@@ -74,25 +98,30 @@ def personalizar_resposta(texto):
     return f"{texto} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
 
 
-# Busca de resposta otimizada
-def encontrar_resposta(pergunta):
+# ---------- 5. Busca de resposta ----------
+def encontrar_resposta(pergunta: str) -> str:
+    # Normaliza a pergunta do usuário
+    pergunta_norm = normalizar_texto(pergunta)
 
-    intencao = detectar_intencao(pergunta)
-    if intencao:
-        return random.choice(respostas_intencao[intencao])
+    # Embedding da pergunta normalizada
+    pergunta_emb = modelo.encode(pergunta_norm, convert_to_tensor=True)
 
-    pergunta_embedding = modelo.encode(pergunta, convert_to_tensor=True)
-    melhor_resposta = random.choice(respostas_padrao)
-    maior_similaridade = 0.6
+    melhor_resposta = None
+    maior_sim = 0.6          # limiar mínimo
 
+    for chave, emb_chave in embeddings_base.items():
+        sim = util.pytorch_cos_sim(pergunta_emb, emb_chave).item()
+        if sim > maior_sim:
+            maior_sim = sim
+            melhor_resposta = base_conhecimento[chave]
 
-    for chave, chave_embedding in embeddings_base.items():
-        similaridade = util.pytorch_cos_sim(pergunta_embedding, chave_embedding).item()
-        if similaridade > maior_similaridade:
-            maior_similaridade = similaridade
-            melhor_resposta = f"{base_conhecimento[chave]} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
+    # Se nenhuma resposta for suficientemente similar, use fallback
+    if not melhor_resposta:
+        melhor_resposta = random.choice(respostas_padrao)
 
-    return melhor_resposta
+    # Adiciona emoji aleatório
+    return f"{melhor_resposta} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
+
 
 
 # Sidebar - Exibir imagem com borda futurista
@@ -118,7 +147,11 @@ with st.sidebar:
                 Posso responder dúvidas frequentes,fornecer informações úteis e muito mais — tudo com inteligência artificial.
             </p>
             <p>
-                Experimente me perguntar algo como "qual o email do credenciamento? ou preciso do link do portal frotista?.
+                Experimente me perguntar algo como :
+                1 - "Qual o email do credenciamento? 
+                2 - Preciso do link do portal frotista? 
+                3 - Preciso do link do formulário de Gestão de acessos.
+                E muito mais!!
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -163,6 +196,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
