@@ -161,8 +161,6 @@ with st.sidebar:
 
 # Título principal
 st.markdown("<h1 style='text-align: center;'>GIGI - Sua Assistente Virtual</h1>", unsafe_allow_html=True)
-
-
 if "historico" not in st.session_state:
     st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
 
@@ -199,6 +197,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
