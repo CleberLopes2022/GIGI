@@ -183,23 +183,23 @@ def processar_pergunta():
         st.session_state.historico.append(("GIGI", resposta))
         st.session_state.input_user = ""  # Reset de campo sem erro
 
-# ---------- 6. Histórico ----------
-if "historico" not in st.session_state:
-    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
-
-for remetente, mensagem in st.session_state.historico[-10:]:
-    if remetente == "Você":
-        st.chat_message("user").write(mensagem)
-    else:
-        st.chat_message("assistant").write(mensagem)
+# Formulário de entrada abaixo do histórico
+st.markdown("Digite sua pergunta abaixo")
+with st.form(key="chat_form"):
+    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
+    enviar = st.form_submit_button("Enviar", on_click=processar_pergunta)
 
 
-# ---------- 7. Entrada de usuário ----------
-if prompt := st.chat_input("Digite sua pergunta..."):
-    resposta = encontrar_resposta(prompt)
-    st.session_state.historico.append(("Você", prompt))
-    st.session_state.historico.append(("GIGI", resposta))
+if enviar and user_input.strip():
+    with st.spinner("GIGI está pensando... 🤖💭"):
+        resposta = encontrar_resposta(user_input)
+        st.session_state.historico.append(("Você", user_input))
+        st.session_state.historico.append(("GIGI", resposta))
+    # Agora, resetamos corretamente
+    st.session_state.input_user = ""
+
     st.rerun()
+
 
 
 
