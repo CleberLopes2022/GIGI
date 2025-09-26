@@ -78,7 +78,7 @@ def detectar_intencao(pergunta):
     pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
 
     melhor_intencao = None
-    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))  # limiar adaptativo
+    maior_similaridade = max(0.4, min(0.65, len(pergunta) / 50))  # Limiar adaptativo ou pode colocar direto maior_similaridade = 0.55 que é um valor médio
 
     for intencao, exemplos in intencoes.items():
         # gera embeddings para todos os exemplos da intenção
@@ -197,6 +197,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
