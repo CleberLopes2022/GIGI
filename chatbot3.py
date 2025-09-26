@@ -83,20 +83,25 @@ respostas_intencao = {
     "ajuda": ["Posso responder perguntas! É só digitar.", "Sou uma assistente virtual treinada para te ajudar.", "Me pergunte algo e eu tentarei ajudar!"]
 }
 
-
 def detectar_intencao(pergunta):
+    # embedding da pergunta
     pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
-    melhor_intencao = None
-    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))
 
-    for intencao, palavras in intencoes.items():
-        palavras_embedding = modelo.encode(" ".join(palavras), convert_to_tensor=True)
-        similaridade = util.pytorch_cos_sim(pergunta_embedding, palavras_embedding).item()
+    melhor_intencao = None
+    maior_similaridade = max(0.5, min(0.7, len(pergunta) / 50))  # limiar adaptativo
+
+    for intencao, exemplos in intencoes.items():
+        # gera embeddings para todos os exemplos da intenção
+        exemplos_embedding = modelo.encode(exemplos, convert_to_tensor=True)
+
+        # pega a maior similaridade entre a pergunta e os exemplos
+        similaridade = util.pytorch_cos_sim(pergunta_embedding, exemplos_embedding).max().item()
 
         if similaridade > maior_similaridade:
             maior_similaridade = similaridade
             melhor_intencao = intencao
 
+    # retorna a intenção mais parecida ou None
     return melhor_intencao
 
 # Respostas personalizadas
@@ -202,6 +207,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
