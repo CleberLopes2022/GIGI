@@ -45,7 +45,9 @@ def carregar_base():
     return {normalizar_texto(k): v for k, v in dados.items()}
 
 
-@st.cache_data def carregar_base(): with open("base_conhecimento.json", "r", encoding="utf-8") as file: return json.load(file)
+@st.cache_data 
+def carregar_base():
+    with open("base_conhecimento.json", "r", encoding="utf-8") as file: return json.load(file)
 base_conhecimento = carregar_base()
 
 # Pré-calcular embeddings da base
@@ -198,6 +200,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
