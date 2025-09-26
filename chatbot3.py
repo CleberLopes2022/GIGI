@@ -30,7 +30,9 @@ st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg",
 def carregar_modelo():
     return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-@st.cache_resource def carregar_modelo(): return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+@st.cache_resource 
+def carregar_modelo():
+    return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 modelo = carregar_modelo()
 
 
@@ -196,6 +198,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
