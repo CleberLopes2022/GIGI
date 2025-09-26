@@ -55,7 +55,9 @@ base_conhecimento = carregar_base()
 def calcular_embeddings_base():
     return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 
-@st.cache_data def calcular_embeddings_base(): return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
+@st.cache_data 
+def calcular_embeddings_base():
+    return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 embeddings_base = calcular_embeddings_base()
 
 
@@ -200,6 +202,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
