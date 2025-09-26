@@ -111,7 +111,7 @@ def encontrar_resposta(pergunta: str) -> str:
     pergunta_emb = modelo.encode(pergunta_norm, convert_to_tensor=True)
 
     melhor_resposta = None
-    maior_sim = 0.6
+    maior_sim = 0.7
 
     for chave, emb_chave in embeddings_base.items():
         sim = util.pytorch_cos_sim(pergunta_emb, emb_chave).item()
@@ -199,6 +199,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
