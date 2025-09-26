@@ -30,11 +30,7 @@ st.set_page_config(page_title="GIGI - Assistente Virtual", page_icon="GIGI.jpg",
 def carregar_modelo():
     return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-@st.cache_resource 
-def carregar_modelo():
-    return SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 modelo = carregar_modelo()
-
 
 # ---------- 2. Carregamento da base ----------
 @st.cache_data
@@ -45,9 +41,6 @@ def carregar_base():
     return {normalizar_texto(k): v for k, v in dados.items()}
 
 
-@st.cache_data 
-def carregar_base():
-    with open("base_conhecimento.json", "r", encoding="utf-8") as file: return json.load(file)
 base_conhecimento = carregar_base()
 
 # Pré-calcular embeddings da base
@@ -55,9 +48,6 @@ base_conhecimento = carregar_base()
 def calcular_embeddings_base():
     return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 
-@st.cache_data 
-def calcular_embeddings_base():
-    return {chave: modelo.encode(chave, convert_to_tensor=True) for chave in base_conhecimento.keys()}
 embeddings_base = calcular_embeddings_base()
 
 
@@ -111,14 +101,17 @@ def personalizar_resposta(texto):
 
 # ---------- 5. Busca de resposta ----------
 def encontrar_resposta(pergunta: str) -> str:
-    # Normaliza a pergunta do usuário
-    pergunta_norm = normalizar_texto(pergunta)
+    # Primeiro tenta detectar intenção
+    intencao = detectar_intencao(pergunta)
+    if intencao:
+        return personalizar_resposta(random.choice(respostas_intencao[intencao]))
 
-    # Embedding da pergunta normalizada
+    # Busca na base de conhecimento
+    pergunta_norm = normalizar_texto(pergunta)
     pergunta_emb = modelo.encode(pergunta_norm, convert_to_tensor=True)
 
     melhor_resposta = None
-    maior_sim = 0.6          # limiar mínimo
+    maior_sim = 0.6
 
     for chave, emb_chave in embeddings_base.items():
         sim = util.pytorch_cos_sim(pergunta_emb, emb_chave).item()
@@ -126,12 +119,10 @@ def encontrar_resposta(pergunta: str) -> str:
             maior_sim = sim
             melhor_resposta = base_conhecimento[chave]
 
-    # Se nenhuma resposta for suficientemente similar, use fallback
     if not melhor_resposta:
         melhor_resposta = random.choice(respostas_padrao)
 
-    # Adiciona emoji aleatório
-    return f"{melhor_resposta} {random.choice(['😊', '😉', '👍', '💬', '🌟'])}"
+    return personalizar_resposta(melhor_resposta)
 
 
 
@@ -150,19 +141,20 @@ with st.sidebar:
                         border: 4px solid #00ffff; 
                         box-shadow: 0 0 20px #00ffff;
                         margin-bottom: 15px;" />
-            <p <p style="color:#00a2ff; font-weight: bold; margin-top: 10px;"><b>Sou a GIGI, sua assistente virtual!</b></p>
+            <p style="color:#00a2ff; font-weight: bold; margin-top: 10px;">
+                <b>Sou a GIGI, sua assistente virtual!</b>
+            </p>
         </div>
         <div style="text-align: center; margin-bottom: 15px; color: #00a2ff">
             <p>
                 Meu objetivo é facilitar o seu dia! 
-                Posso responder dúvidas frequentes,fornecer informações úteis e muito mais — tudo com inteligência artificial.
+                Posso responder dúvidas frequentes, fornecer informações úteis e muito mais — tudo com inteligência artificial.
             </p>
             <p>
-                Experimente me perguntar algo como :
-                1 - "Qual o email do credenciamento? 
-                2 - Preciso do link do portal frotista? 
-                3 - Preciso do link do formulário de Gestão de acessos.
-                E muito mais!!
+                Experimente me perguntar algo como:
+                <br>1 - Qual o email do credenciamento?
+                <br>2 - Preciso do link do portal frotista?
+                <br>3 - Preciso do link do formulário de Gestão de acessos.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -191,22 +183,24 @@ def processar_pergunta():
         st.session_state.historico.append(("GIGI", resposta))
         st.session_state.input_user = ""  # Reset de campo sem erro
 
-# Formulário de entrada abaixo do histórico
-st.markdown("Digite sua pergunta abaixo")
-with st.form(key="chat_form"):
-    user_input = st.text_input("Você:", placeholder="Digite sua pergunta...", key="input_user")
-    enviar = st.form_submit_button("Enviar", on_click=processar_pergunta)
+# ---------- 6. Histórico ----------
+if "historico" not in st.session_state:
+    st.session_state.historico = [("GIGI", "Olá! Eu sou a GIGI. Como posso te ajudar hoje?")]
+
+for remetente, mensagem in st.session_state.historico[-10:]:
+    if remetente == "Você":
+        st.chat_message("user").write(mensagem)
+    else:
+        st.chat_message("assistant").write(mensagem)
 
 
-if enviar and user_input.strip():
-    with st.spinner("GIGI está pensando... 🤖💭"):
-        resposta = encontrar_resposta(user_input)
-        st.session_state.historico.append(("Você", user_input))
-        st.session_state.historico.append(("GIGI", resposta))
-    # Agora, resetamos corretamente
-    st.session_state.input_user = ""
-
+# ---------- 7. Entrada de usuário ----------
+if prompt := st.chat_input("Digite sua pergunta..."):
+    resposta = encontrar_resposta(prompt)
+    st.session_state.historico.append(("Você", prompt))
+    st.session_state.historico.append(("GIGI", resposta))
     st.rerun()
+
 
 
 
