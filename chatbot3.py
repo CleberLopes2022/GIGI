@@ -73,26 +73,24 @@ respostas_intencao = {
     "ajuda": ["Posso responder perguntas! É só digitar.", "Sou uma assistente virtual treinada para te ajudar.", "Me pergunte algo e eu tentarei ajudar!"]
 }
 
-def detectar_intencao(pergunta):
-    # embedding da pergunta
+def detectar_intencao(pergunta, limiar=0.65):
+    """
+    Detecta a intenção do usuário comparando a pergunta com exemplos.
+    Só retorna se a similaridade for >= limiar.
+    """
     pergunta_embedding = modelo.encode(pergunta.lower(), convert_to_tensor=True)
-
     melhor_intencao = None
-    maior_similaridade = 0.0  # Limiar adaptativo ou pode colocar direto maior_similaridade = 0.55 que é um valor médio
+    maior_similaridade = 0.0  
 
     for intencao, exemplos in intencoes.items():
-        # gera embeddings para todos os exemplos da intenção
         exemplos_embedding = modelo.encode(exemplos, convert_to_tensor=True)
-
-        # pega a maior similaridade entre a pergunta e os exemplos
         similaridade = util.pytorch_cos_sim(pergunta_embedding, exemplos_embedding).max().item()
 
         if similaridade > maior_similaridade:
             maior_similaridade = similaridade
             melhor_intencao = intencao
 
-    # retorna a intenção mais parecida ou None
-    return melhor_intencao
+    return melhor_intencao if maior_similaridade >= limiar else None
 
 # Respostas personalizadas
 def personalizar_resposta(texto):
@@ -101,28 +99,34 @@ def personalizar_resposta(texto):
 
 # ---------- 5. Busca de resposta ----------
 def encontrar_resposta(pergunta: str) -> str:
-    # Primeiro tenta detectar intenção
-    intencao = detectar_intencao(pergunta)
-    if intencao:
-        return personalizar_resposta(random.choice(respostas_intencao[intencao]))
-
-    # Busca na base de conhecimento
+    """
+    1. Procura resposta na base JSON (prioridade)
+    2. Se não encontrar, tenta identificar intenção
+    3. Se nada for encontrado, usa resposta padrão
+    """
     pergunta_norm = normalizar_texto(pergunta)
     pergunta_emb = modelo.encode(pergunta_norm, convert_to_tensor=True)
 
     melhor_resposta = None
-    maior_sim = 0.7
+    maior_sim = 0.6  # limiar mais flexível para achar no JSON
 
+    # ---------- 1. Busca na base JSON ----------
     for chave, emb_chave in embeddings_base.items():
         sim = util.pytorch_cos_sim(pergunta_emb, emb_chave).item()
         if sim > maior_sim:
             maior_sim = sim
             melhor_resposta = base_conhecimento[chave]
 
-    if not melhor_resposta:
-        melhor_resposta = random.choice(respostas_padrao)
+    if melhor_resposta:
+        return personalizar_resposta(melhor_resposta)
 
-    return personalizar_resposta(melhor_resposta)
+    # ---------- 2. Intenção ----------
+    intencao = detectar_intencao(pergunta)
+    if intencao:
+        return personalizar_resposta(random.choice(respostas_intencao[intencao]))
+
+    # ---------- 3. Resposta padrão ----------
+    return personalizar_resposta(random.choice(respostas_padrao))
 
 
 
@@ -197,6 +201,7 @@ if enviar and user_input.strip():
     st.session_state.input_user = ""
 
     st.rerun()
+
 
 
 
